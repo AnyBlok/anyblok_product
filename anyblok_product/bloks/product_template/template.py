@@ -7,6 +7,7 @@ from anyblok import Declarations
 from anyblok.column import (
     DateTime,
     String,
+    Text,
     Integer
 )
 
@@ -34,13 +35,13 @@ class TrackModel:
                          auto_update=True)
 
 
-@Declarations.register(Model)
+@Declarations.register(Model.Product)
 class Template(IdColumn, TrackModel):
     """Template class
     """
     sku = String(label="Template sku", unique=True, nullable=True)
     name = String(label="Template name")
-    description = String(label="Template description")
+    description = Text(label="Template description")
     properties = Jsonb(label="Template properties")
 
     def __str__(self):

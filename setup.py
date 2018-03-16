@@ -24,6 +24,7 @@ with open(os.path.join(here, 'VERSION'),
 requirements = [
     'anyblok',
     'anyblok_postgres',
+    'anyblok-marshmallow',
 ]
 
 test_requirements = [

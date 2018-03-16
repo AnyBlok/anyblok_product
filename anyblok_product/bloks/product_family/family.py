@@ -5,6 +5,7 @@ from logging import getLogger
 from anyblok import Declarations
 from anyblok.column import (
     String,
+    Text,
 )
 
 from anyblok_postgres.column import Jsonb

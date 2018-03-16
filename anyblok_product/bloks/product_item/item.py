@@ -7,6 +7,7 @@ from anyblok import Declarations
 from anyblok.column import (
     DateTime,
     String,
+    Text,
     Integer
 )
 
@@ -45,7 +46,7 @@ class Item(IdColumn, TrackModel):
     """
     sku = String(label="Item sku", unique=True, nullable=True)
     name = String(label="Item name")
-    description = String(label="Item description")
+    description = Text(label="Item description")
     properties = Jsonb(label="Item properties")
 
     def __str__(self):
