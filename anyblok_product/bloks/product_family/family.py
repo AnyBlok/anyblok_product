@@ -20,10 +20,22 @@ Mixin = Declarations.Mixin
 class Family(Mixin.IdColumn, Mixin.TrackModel):
     """Product.Family class
     """
+    family_schema = None
+    template_schema = None
+    item_schema = None
+
     code = String(label="Family code", unique=True, nullable=True)
     name = String(label="Family name")
-    description = String(label="Family description")
+    description = Text(label="Family description")
     properties = Jsonb(label="Family properties")
+
+    @classmethod
+    def create(cls, **kwargs):
+        if cls.family_schema:
+            # TODO: check that schema exists and use it to validate data
+            pass
+        else:
+            return cls.insert(**kwargs)
 
     def __str__(self):
         return "%s : %s" % (self.code, self.name)

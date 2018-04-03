@@ -1,14 +1,11 @@
 """Template model
 """
-from datetime import datetime
 from logging import getLogger
 
 from anyblok import Declarations
 from anyblok.column import (
-    DateTime,
     String,
     Text,
-    Integer
 )
 
 from anyblok_postgres.column import Jsonb

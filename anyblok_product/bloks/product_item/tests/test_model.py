@@ -17,7 +17,6 @@ class TestProductModel(BlokTestCase):
 
     def test_product_creation_properties(self):
         Item = self.registry.Product.Item
-        props = dict(color="Blue", size="L")
 
         self.assertIn("color", self.prod.properties.keys())
         self.assertNotIn("unexisting_property", self.prod.properties.keys())
