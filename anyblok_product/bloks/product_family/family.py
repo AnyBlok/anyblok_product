@@ -33,9 +33,11 @@ class Family(Mixin.IdColumn, Mixin.TrackModel):
     def create(cls, **kwargs):
         if cls.family_schema:
             # TODO: check that schema exists and use it to validate data
-            pass
-        else:
-            return cls.insert(**kwargs)
+            sch = cls.family_schema(registry=cls.registry)
+            errors = sch.validate(kwargs)
+            if errors:
+                raise Exception(str(errors))
+        return cls.insert(**kwargs)
 
     def __str__(self):
         return "%s : %s" % (self.code, self.name)
