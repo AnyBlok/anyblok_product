@@ -2,6 +2,8 @@
 """
 from logging import getLogger
 
+from marshmallow.exceptions import ValidationError
+
 from anyblok import Declarations
 from anyblok.column import (
     String,
@@ -24,7 +26,7 @@ class Family(Mixin.IdColumn, Mixin.TrackModel):
     template_schema = None
     item_schema = None
 
-    code = String(label="Family code", unique=True, nullable=True)
+    code = String(label="Family code", unique=True, nullable=False)
     name = String(label="Family name")
     description = Text(label="Family description")
     properties = Jsonb(label="Family properties")
@@ -32,11 +34,10 @@ class Family(Mixin.IdColumn, Mixin.TrackModel):
     @classmethod
     def create(cls, **kwargs):
         if cls.family_schema:
-            # TODO: check that schema exists and use it to validate data
             sch = cls.family_schema(registry=cls.registry)
             errors = sch.validate(kwargs)
             if errors:
-                raise Exception(str(errors))
+                raise ValidationError(errors)
         return cls.insert(**kwargs)
 
     def __str__(self):
