@@ -6,4 +6,3 @@ coverage
 WebTest
 sphinx
 sphinxcontrib-httpdomain
-git+https://github.com/AnyBlok/Anyblok.git#egg=anyblok

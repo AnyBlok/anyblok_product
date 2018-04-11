@@ -25,6 +25,7 @@ requirements = [
     'anyblok',
     'anyblok_postgres',
     'anyblok-marshmallow',
+    'marshmallow==3.0.0b8',
 ]
 
 test_requirements = [
