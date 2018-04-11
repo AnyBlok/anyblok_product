@@ -20,7 +20,7 @@ Mixin = Declarations.Mixin
 class Template(Mixin.IdColumn, Mixin.TrackModel):
     """Template class
     """
-    sku = String(label="Template sku", unique=True, nullable=True)
+    code = String(label="Template code", unique=True, nullable=True)
     name = String(label="Template name")
     description = Text(label="Template description")
     properties = Jsonb(label="Template properties")
