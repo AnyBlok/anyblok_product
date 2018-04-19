@@ -7,13 +7,13 @@ class TestProductModel(BlokTestCase):
     def setUp(self):
         super(TestProductModel, self).setUp()
         self.prod = self.registry.Product.Item.insert(
-                sku="sku001",
+                code="code001",
                 name="Foo",
                 properties=dict(color="Blue", size="L"),
                 description="Foo description")
 
     def test_product_creation_base(self):
-        self.assertEqual(self.prod.sku, "sku001")
+        self.assertEqual(self.prod.code, "code001")
 
     def test_product_creation_properties(self):
         Item = self.registry.Product.Item

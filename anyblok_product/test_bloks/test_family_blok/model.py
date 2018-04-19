@@ -62,11 +62,37 @@ class ShoeTemplateSchema(ModelSchema):
     properties = Nested(ShoeTemplateSchemaProperties(partial=True))
 
 
+class ShoeItemSchemaProperties(Schema):
+    size = JsonCollection(
+                fieldname="properties",
+                keys=['sizes'],
+                required=True)
+    color = JsonCollection(
+                fieldname="properties",
+                keys=['colors'],
+                required=True)
+
+    @validates_schema(pass_original=True)
+    def check_unknown_fields(self, data, original_data):
+        unknown = set(original_data) - set(self.fields)
+        if unknown:
+            raise ValidationError('Unknown field', unknown)
+
+
+class ShoeItemSchema(ModelSchema):
+
+    class Meta:
+        model = "Model.Product.Item"
+
+    properties = Nested(ShoeItemSchemaProperties(partial=True))
+
+
 @register(Model.Product.Family, tablename=Model.Product.Family)
 class ShoeFamilyTest(Model.Product.Family):
     FAMILY_CODE = "SHOES"  # polymorphic identity
     family_schema = ShoeFamilySchema
     template_schema = ShoeTemplateSchema
+    item_schema = ShoeItemSchema
 
 
 @Declarations.register(Model.Product)

@@ -75,10 +75,12 @@ class TestFamilyBlok(DBTestCase):
                     properties=dict(unexisting_schema_key=[])
                     )
 
-        self.assertTrue('properties' in ctx.exception.messages.keys())
-        self.assertDictEqual(
-                dict(properties=dict(unexisting_schema_key=['Unknown field'])),
-                ctx.exception.messages)
+            self.assertTrue('properties' in ctx.exception.messages.keys())
+            self.assertDictEqual(
+                    dict(
+                        properties=dict(
+                            unexisting_schema_key=['Unknown field'])),
+                    ctx.exception.messages)
 
 
 class TestTemplateBlok(DBTestCase):
@@ -111,7 +113,6 @@ class TestTemplateBlok(DBTestCase):
                     style="Sneakers",
                     genre="Unisex")
                 )
-
         self.assertTrue(
                 isinstance(
                     shoe_template,
@@ -182,10 +183,10 @@ class TestTemplateBlok(DBTestCase):
                     genre="Unisex")
                 )
 
-        self.assertTrue('properties' in ctx.exception.messages.keys())
-        self.assertDictEqual(
-                dict(properties=dict(unexisting_key=['Unknown field'])),
-                ctx.exception.messages)
+            self.assertTrue('properties' in ctx.exception.messages.keys())
+            self.assertDictEqual(
+                    dict(properties=dict(unexisting_key=['Unknown field'])),
+                    ctx.exception.messages)
 
     def test_shoe_template_create_fail_schema_props_bad_value(self):
         registry = self.init_registry(None)
@@ -206,4 +207,139 @@ class TestTemplateBlok(DBTestCase):
         self.assertTrue('properties' in ctx.exception.messages.keys())
         self.assertDictEqual(
                 dict(properties=dict(genre=['Not a valid choice.'])),
+                ctx.exception.messages)
+
+
+class TestItemBlok(DBTestCase):
+    blok_entry_points = ('bloks', 'test_bloks')
+
+    def create_shoe_template(self):
+        shoe_family = self.registry.Product.Family.ShoeFamilyTest.create(
+                code="SHOES",
+                name="Shoes",
+                description="Shoes description",
+                properties=dict(
+                    brands=_BRANDS,
+                    sizes=_SIZES,
+                    colors=_COLORS,
+                    styles=_STYLES,
+                    genres=_GENRES)
+                )
+        return self.registry.Product.Template.create(
+                shoe_family,
+                code="GAZGAZ",
+                name="Gaz Gaz",
+                description="Gaz Gaz template description",
+                properties=dict(
+                    brand="Adibash",
+                    style="Sneakers",
+                    genre="Unisex")
+                )
+
+    def test_shoe_item_create(self):
+        registry = self.init_registry(None)
+        registry.upgrade(install=('test_family_blok',))
+
+        shoe_item = registry.Product.Item.create(
+                self.create_shoe_template(),
+                code="GAZGAZ-BLUE-40",
+                name="Gaz Gaz blue 40",
+                description="Gaz Gaz blue 40 item description",
+                properties=dict(
+                    color="blue",
+                    size="40")
+                )
+
+        self.assertTrue(
+                isinstance(
+                    shoe_item,
+                    registry.Product.Item
+                    )
+                )
+        self.assertTrue(
+                isinstance(
+                    shoe_item.template.family,
+                    registry.Product.Family.ShoeFamilyTest
+                    )
+                )
+        self.assertEqual(len(registry.Product.Item.query().all()), 1)
+        self.assertEqual(
+                registry.Product.Item.query().first().code,
+                "GAZGAZ-BLUE-40"
+                )
+
+    def test_shoe_item_create_fail_schema_validation_base(self):
+        registry = self.init_registry(None)
+        registry.upgrade(install=('test_family_blok',))
+
+        with self.assertRaises(ValidationError) as ctx:
+            registry.Product.Item.create(
+                    self.create_shoe_template(),
+                    name="Gaz Gaz blue 40",
+                    description="Gaz Gaz blue 40 item description",
+                    properties=dict(
+                        color="blue",
+                        size="40")
+                    )
+            self.assertTrue('code' in ctx.exception.messages.keys())
+
+    def test_shoe_item_create_fail_schema_validation_bad_field(self):
+        registry = self.init_registry(None)
+        registry.upgrade(install=('test_family_blok',))
+
+        with self.assertRaises(ValidationError) as ctx:
+            registry.Product.Item.create(
+                    self.create_shoe_template(),
+                    code="GAZGAZ-BLUE-40",
+                    name="Gaz Gaz blue 40",
+                    unexisting_field="plop",
+                    description="Gaz Gaz blue 40 item description",
+                    properties=dict(
+                        color="blue",
+                        size="40")
+                    )
+
+            self.assertTrue(
+                    'unexisting_field' in ctx.exception.messages.keys())
+
+    def test_shoe_item_create_fail_schema_props_unexisting_json_key(self):
+        registry = self.init_registry(None)
+        registry.upgrade(install=('test_family_blok',))
+
+        with self.assertRaises(ValidationError) as ctx:
+            registry.Product.Item.create(
+                    self.create_shoe_template(),
+                    code="GAZGAZ-BLUE-40",
+                    name="Gaz Gaz blue 40",
+                    description="Gaz Gaz blue 40 item description",
+                    properties=dict(
+                        color="blue",
+                        unexisting_key="plop",
+                        size="40")
+                    )
+
+            self.assertTrue('properties' in ctx.exception.messages.keys())
+            self.assertDictEqual(
+                    dict(properties=dict(unexisting_key=['Unknown field'])),
+                    ctx.exception.messages)
+
+    def test_shoe_item_create_fail_schema_props_bad_value(self):
+        registry = self.init_registry(None)
+        registry.upgrade(install=('test_family_blok',))
+
+        with self.assertRaises(ValidationError) as ctx:
+            registry.Product.Item.create(
+                    self.create_shoe_template(),
+                    code="GAZGAZ-BLUE-40",
+                    name="Gaz Gaz blue 40",
+                    description="Gaz Gaz blue 40 item description",
+                    properties=dict(
+                        color="blue",
+                        unexisting_key="plop",
+                        size="4000")
+                    )
+
+        self.assertTrue('properties' in ctx.exception.messages.keys())
+        self.assertDictEqual(
+                dict(properties=dict(size=['Not a valid choice.'])),
                 ctx.exception.messages)

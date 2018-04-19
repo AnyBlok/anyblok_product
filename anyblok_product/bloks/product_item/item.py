@@ -44,14 +44,14 @@ class Product:
 class Item(IdColumn, TrackModel):
     """Product.Item class
     """
-    sku = String(label="Item sku", unique=True, nullable=True)
+    code = String(label="Item code", unique=True, nullable=False)
     name = String(label="Item name")
     description = Text(label="Item description")
     properties = Jsonb(label="Item properties")
 
     def __str__(self):
-        return "%s : %s" % (self.sku, self.name)
+        return "%s : %s" % (self.code, self.name)
 
     def __repr__(self):
-        return "<Product.Item(sku=%s, name=%s)>" % (
-            self.sku, self.name)
+        return "<Product.Item(code=%s, name=%s)>" % (
+            self.code, self.name)
