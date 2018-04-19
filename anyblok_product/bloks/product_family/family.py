@@ -78,5 +78,5 @@ class Template:
         data = kwargs.copy()
         if family.template_schema:
             sch = family.template_schema(registry=cls.registry)
-            data = sch.load(kwargs)
+            data = sch.load(kwargs, instances=dict(default=family))
         return cls.insert(family=family, **data)

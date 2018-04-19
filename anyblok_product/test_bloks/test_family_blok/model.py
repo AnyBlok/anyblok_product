@@ -3,7 +3,7 @@ from marshmallow import Schema, fields, validates_schema, ValidationError
 from anyblok import Declarations
 
 from anyblok_marshmallow import ModelSchema
-from anyblok_marshmallow.fields import Nested
+from anyblok_marshmallow.fields import Nested, JsonCollection
 
 
 register = Declarations.register
@@ -34,9 +34,18 @@ class ShoeFamilySchema(ModelSchema):
 
 
 class ShoeTemplateSchemaProperties(Schema):
-    brand = fields.Str(required=True)
-    style = fields.Str(required=True)
-    genre = fields.Str(required=True)
+    brand = JsonCollection(
+                fieldname="properties",
+                keys=['brands'],
+                required=True)
+    style = JsonCollection(
+                fieldname="properties",
+                keys=['styles'],
+                required=True)
+    genre = JsonCollection(
+                fieldname="properties",
+                keys=['genres'],
+                required=True)
 
     @validates_schema(pass_original=True)
     def check_unknown_fields(self, data, original_data):
@@ -55,7 +64,7 @@ class ShoeTemplateSchema(ModelSchema):
 
 @register(Model.Product.Family, tablename=Model.Product.Family)
 class ShoeFamilyTest(Model.Product.Family):
-    FAMILY_CODE = "SHOES"
+    FAMILY_CODE = "SHOES"  # polymorphic identity
     family_schema = ShoeFamilySchema
     template_schema = ShoeTemplateSchema
 
