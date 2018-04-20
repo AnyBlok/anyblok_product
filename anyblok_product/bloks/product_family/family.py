@@ -8,6 +8,7 @@ from anyblok.column import (
     Text,
     Selection,
 )
+from anyblok.field import Function
 from anyblok.relationship import Many2One
 
 from anyblok_postgres.column import Jsonb
@@ -34,10 +35,17 @@ class Family(Mixin.IdColumn, Mixin.TrackModel):
     properties = Jsonb(label="Family properties")
 
     family_code = Selection(selections='get_family_codes')
+    items = Function(fget="fget_items")
 
     @classmethod
     def get_family_codes(cls):
         return dict()
+
+    def fget_items(self):
+        """Returns a list of products instance from this family
+        """
+        return self.registry.InstrumentedList(
+            set([i for t in self.templates for i in t.items]))
 
     @classmethod
     def create(cls, **kwargs):

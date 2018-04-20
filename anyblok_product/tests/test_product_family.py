@@ -343,3 +343,78 @@ class TestItemBlok(DBTestCase):
         self.assertDictEqual(
                 dict(properties=dict(size=['Not a valid choice.'])),
                 ctx.exception.messages)
+
+    def test_shoe_item_create_collection(self):
+        registry = self.init_registry(None)
+        registry.upgrade(install=('test_family_blok',))
+
+        Template = self.registry.Product.Template
+        Item = self.registry.Product.Item
+
+        shoe_family = self.registry.Product.Family.ShoeFamilyTest.create(
+                code="SHOES",
+                name="Shoes",
+                description="Shoes description",
+                properties=dict(
+                    brands=_BRANDS,
+                    sizes=_SIZES,
+                    colors=_COLORS,
+                    styles=_STYLES,
+                    genres=_GENRES)
+                )
+        for brand in _BRANDS:
+            for style in _STYLES:
+                for genre in _GENRES:
+                    template = registry.Product.Template.create(
+                        shoe_family,
+                        code="%s-%s-%s" % (brand, style, genre),
+                        name="%s %s %s" % (brand, style, genre),
+                        description="Template %s %s %s" % (
+                            brand, style, genre),
+                        properties=dict(
+                            brand=brand,
+                            style=style,
+                            genre=genre)
+                        )
+                    for color in _COLORS:
+                        for size in _SIZES:
+                            Item.create(
+                                template,
+                                code="%s-%s-%s-%s-%s" % (
+                                    brand, style, genre, color, size),
+                                name="%s %s %s %s %s" % (
+                                    brand, style, genre, color, size),
+                                description="Item %s %s %s %s %s" % (
+                                    brand, style, genre, color, size),
+                                properties=dict(
+                                    color=color,
+                                    size=size)
+                                )
+
+        self.assertEqual(len(registry.Product.Template.query().all()), 36)
+        self.assertEqual(len(registry.Product.Item.query().all()), 900)
+
+        self.assertEqual(len(shoe_family.templates), 36)
+        self.assertEqual(len(shoe_family.items), 900)
+
+        self.assertEqual(
+            Template.query().filter(
+                Template.properties['brand'].astext == 'Adibash'
+            ).count(), 12)
+
+        self.assertEqual(
+            Template.query().filter(
+                Template.properties['brand'].astext == 'Adibash').filter(
+                    Template.properties['genre'].astext == 'Unisex'
+            ).count(), 3)
+
+        self.assertEqual(
+            Item.query().filter(
+                Item.properties['color'].astext == 'blue'
+            ).count(), 180)
+
+        self.assertEqual(
+            Item.query().filter(
+                Item.properties['color'].astext == 'blue').filter(
+                    Item.properties['size'].astext == '40'
+            ).count(), 36)
