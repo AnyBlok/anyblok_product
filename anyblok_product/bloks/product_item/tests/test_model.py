@@ -4,19 +4,38 @@ from anyblok.tests.testcase import BlokTestCase
 class TestProductModel(BlokTestCase):
     """ Test product model"""
 
-    def test_product_creation_base(self):
-        prod = self.registry.Product.Item.insert(
-                sku="sku001",
+    def setUp(self):
+        super(TestProductModel, self).setUp()
+        self.prod = self.registry.Product.Item.insert(
+                code="code001",
                 name="Foo",
+                properties=dict(color="Blue", size="L"),
                 description="Foo description")
 
-        self.assertEqual(prod.sku, "sku001")
+    def test_product_creation_base(self):
+        self.assertEqual(self.prod.code, "code001")
 
     def test_product_creation_properties(self):
-        props = dict(color="Blue", size="L")
-        prod = self.registry.Product.Item.insert(sku="sku001", name="Foo",
-                                                 properties=props,
-                                                 description="Foo description")
-        self.assertEqual(prod.properties['color'], "Blue")
-        self.assertIn("color", prod.properties.keys())
-        self.assertIn("Blue", prod.properties.values())
+        Item = self.registry.Product.Item
+
+        self.assertIn("color", self.prod.properties.keys())
+        self.assertNotIn("unexisting_property", self.prod.properties.keys())
+
+        self.assertIn("Blue", self.prod.properties.values())
+        self.assertNotIn("unexisting_value", self.prod.properties.values())
+
+        self.assertEqual(self.prod.properties['color'], "Blue")
+        self.assertEqual(
+            Item.query().filter(
+                Item.properties['color'].astext == 'Red'
+            ).count(), 0)
+
+        self.assertEqual(
+            Item.query().filter(
+                Item.properties['color'].astext == 'Blue'
+            ).count(), 1)
+
+        self.assertEqual(
+            Item.query().filter(
+                Item.properties['unexisting_property'].astext == 'Blue'
+            ).count(), 0)

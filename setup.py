@@ -24,7 +24,8 @@ with open(os.path.join(here, 'VERSION'),
 requirements = [
     'anyblok',
     'anyblok_postgres',
-    'anyblok-pyramid-rest-api',
+    'anyblok-marshmallow',
+    'marshmallow==3.0.0b8',
 ]
 
 test_requirements = [
@@ -38,7 +39,14 @@ bloks = [
         'ProductTemplateBlok'
     ),
     'product_family=anyblok_product.bloks.product_family:ProductFamilyBlok',
-],
+]
+
+test_bloks = [
+    (
+        'test_family_blok=anyblok_product.test_bloks.test_family_blok:'
+        'TestFamilyBlok'
+    ),
+]
 
 setup(
     name='anyblok_product',
@@ -51,6 +59,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'bloks': bloks,
+        'test_bloks': test_bloks,
     },
     include_package_data=True,
     install_requires=requirements,
@@ -61,7 +70,6 @@ setup(
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
