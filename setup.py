@@ -55,7 +55,7 @@ setup(
     long_description=readme + '\n\n' + changelog,
     author="Franck Bret",
     author_email='franckbret@gmail.com',
-    url='https://github.com/franckbret/anyblok_product',
+    url='https://github.com/AnyBlok/anyblok_product',
     packages=find_packages(),
     entry_points={
         'bloks': bloks,

@@ -1,11 +1,14 @@
 """Template model
 """
+from datetime import datetime
 from logging import getLogger
 
 from anyblok import Declarations
 from anyblok.column import (
     String,
     Text,
+    DateTime,
+    Integer
 )
 
 from anyblok.relationship import Many2One
@@ -15,14 +18,17 @@ from anyblok_postgres.column import Jsonb
 
 logger = getLogger(__name__)
 Model = Declarations.Model
-Mixin = Declarations.Mixin
 register = Declarations.register
 
 
 @Declarations.register(Model.Product)
-class Template(Mixin.IdColumn, Mixin.TrackModel):
+class Template:
     """Template class
     """
+    id = Integer(label="Identifier", primary_key=True)
+    create_date = DateTime(default=datetime.now, nullable=False)
+    edit_date = DateTime(default=datetime.now, nullable=False,
+                         auto_update=True)
     code = String(label="Template code", unique=True, nullable=False)
     name = String(label="Template name")
     description = Text(label="Template description")
