@@ -2,7 +2,7 @@ from anyblok.blok import Blok
 
 
 class TestFamilyBlok(Blok):
-    """Add attachment in AnyBlok"""
+    """Test Family Blok"""
 
     version = '1.0.0'
     required = ['product_family']

@@ -1,5 +1,6 @@
 """Family model
 """
+from datetime import datetime
 from logging import getLogger
 
 from anyblok import Declarations
@@ -7,6 +8,8 @@ from anyblok.column import (
     String,
     Text,
     Selection,
+    DateTime,
+    Integer
 )
 from anyblok.field import Function
 from anyblok.relationship import Many2One
@@ -16,12 +19,11 @@ from anyblok_postgres.column import Jsonb
 
 logger = getLogger(__name__)
 Model = Declarations.Model
-Mixin = Declarations.Mixin
 register = Declarations.register
 
 
 @Declarations.register(Model.Product)
-class Family(Mixin.IdColumn, Mixin.TrackModel):
+class Family:
     """Product.Family class
     """
     FAMILY_CODE = None
@@ -29,6 +31,10 @@ class Family(Mixin.IdColumn, Mixin.TrackModel):
     template_schema = None
     item_schema = None
 
+    id = Integer(label="Identifier", primary_key=True)
+    create_date = DateTime(default=datetime.now, nullable=False)
+    edit_date = DateTime(default=datetime.now, nullable=False,
+                         auto_update=True)
     code = String(label="Family code", unique=True, nullable=False)
     name = String(label="Family name")
     description = Text(label="Family description")
