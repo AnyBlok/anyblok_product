@@ -130,7 +130,7 @@ class TestTemplateBlok(DBTestCase):
                     registry.Product.Family.ShoeFamilyTest
                     )
                 )
-        self.assertEqual(registry.Product.Template.query().count()), 1)
+        self.assertEqual(registry.Product.Template.query().count(), 1)
         self.assertEqual(
                 registry.Product.Template.query().first().code,
                 "GAZGAZ"
