@@ -95,7 +95,7 @@ class ShoeFamilyTest(Model.Product.Family):
     item_schema = ShoeItemSchema
 
 
-@Declarations.register(Model.Product)
+@register(Model.Product)
 class Family:
 
     @classmethod

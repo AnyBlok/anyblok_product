@@ -9,6 +9,8 @@ class ProductItemBlok(Blok):
     version = "0.1.0"
     author = "Franck BRET"
 
+    required = ['anyblok-core']
+
     @classmethod
     def import_declaration_module(cls):
         from . import item # noqa

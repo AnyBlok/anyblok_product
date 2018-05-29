@@ -62,6 +62,14 @@ class Family:
         return cls.insert(**data)
 
     @classmethod
+    def query(cls, *args, **kwargs):
+        query = super(Family, cls).query(*args, **kwargs)
+        if cls.__registry_name__ != 'Model.Product.Family':
+            query = query.filter(cls.family_code == cls.FAMILY_CODE)
+
+        return query
+
+    @classmethod
     def define_mapper_args(cls):
         mapper_args = super(Family, cls).define_mapper_args()
         if cls.__registry_name__ == 'Model.Product.Family':

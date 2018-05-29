@@ -18,22 +18,58 @@ class TestFamilyBlok(DBTestCase):
         registry.upgrade(install=('test_family_blok',))
 
         shoe_family = registry.Product.Family.ShoeFamilyTest.create(
-                code="SHOES", name="Shoes", description="Shoes description",
-                properties=dict(
-                    brands=_BRANDS,
-                    sizes=_SIZES,
-                    colors=_COLORS,
-                    styles=_STYLES,
-                    genres=_GENRES)
-                )
+            code="SHOES", name="Shoes", description="Shoes description",
+            properties=dict(
+                brands=_BRANDS,
+                sizes=_SIZES,
+                colors=_COLORS,
+                styles=_STYLES,
+                genres=_GENRES)
+            )
         self.assertTrue(
-                isinstance(
-                    shoe_family,
-                    registry.Product.Family.ShoeFamilyTest
-                    )
+            isinstance(
+                shoe_family,
+                registry.Product.Family.ShoeFamilyTest
                 )
-        self.assertEqual(len(registry.Product.Family.query().all()), 1)
-        self.assertEqual(registry.Product.Family.query().first().code, "SHOES")
+            )
+        self.assertEqual(
+            registry.Product.Family.ShoeFamilyTest.query().count(),
+            1
+        )
+        self.assertEqual(
+            registry.Product.Family.ShoeFamilyTest.query().first().code,
+            "SHOES")
+
+    def test_family_namespace_query(self):
+        registry = self.init_registry(None)
+        registry.upgrade(install=('test_family_blok',))
+
+        registry.Product.Family.insert(code="other")
+
+        self.assertEqual(registry.Product.Family.query().count(), 1)
+
+        registry.Product.Family.ShoeFamilyTest.create(
+            code="SHOES", name="Shoes", description="Shoes description",
+            properties=dict(
+                brands=_BRANDS,
+                sizes=_SIZES,
+                colors=_COLORS,
+                styles=_STYLES,
+                genres=_GENRES)
+            )
+
+        self.assertEqual(
+            registry.Product.Family.query().count(),
+            2
+        )
+        self.assertEqual(
+            registry.Product.Family.ShoeFamilyTest.query().count(),
+            1
+        )
+        self.assertEqual(
+            registry.Product.Family.ShoeFamilyTest.query().first().code,
+            "SHOES"
+        )
 
     def test_shoe_family_create_fail_schema_validation_base(self):
         registry = self.init_registry(None)
@@ -125,7 +161,7 @@ class TestTemplateBlok(DBTestCase):
                     registry.Product.Family.ShoeFamilyTest
                     )
                 )
-        self.assertEqual(len(registry.Product.Template.query().all()), 1)
+        self.assertEqual(registry.Product.Template.query().count(), 1)
         self.assertEqual(
                 registry.Product.Template.query().first().code,
                 "GAZGAZ"
@@ -262,7 +298,7 @@ class TestItemBlok(DBTestCase):
                     registry.Product.Family.ShoeFamilyTest
                     )
                 )
-        self.assertEqual(len(registry.Product.Item.query().all()), 1)
+        self.assertEqual(registry.Product.Item.query().count(), 1)
         self.assertEqual(
                 registry.Product.Item.query().first().code,
                 "GAZGAZ-BLUE-40"
@@ -391,8 +427,8 @@ class TestItemBlok(DBTestCase):
                                     size=size)
                                 )
 
-        self.assertEqual(len(registry.Product.Template.query().all()), 36)
-        self.assertEqual(len(registry.Product.Item.query().all()), 900)
+        self.assertEqual(registry.Product.Template.query().count(), 36)
+        self.assertEqual(registry.Product.Item.query().count(), 900)
 
         self.assertEqual(len(shoe_family.templates), 36)
         self.assertEqual(len(shoe_family.items), 900)
