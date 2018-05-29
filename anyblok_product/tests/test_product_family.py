@@ -40,6 +40,37 @@ class TestFamilyBlok(DBTestCase):
             registry.Product.Family.ShoeFamilyTest.query().first().code,
             "SHOES")
 
+    def test_family_namespace_query(self):
+        registry = self.init_registry(None)
+        registry.upgrade(install=('test_family_blok',))
+
+        registry.Product.Family.insert(code="other")
+
+        self.assertEqual(registry.Product.Family.query().count(), 1)
+
+        registry.Product.Family.ShoeFamilyTest.create(
+            code="SHOES", name="Shoes", description="Shoes description",
+            properties=dict(
+                brands=_BRANDS,
+                sizes=_SIZES,
+                colors=_COLORS,
+                styles=_STYLES,
+                genres=_GENRES)
+            )
+
+        self.assertEqual(
+            registry.Product.Family.query().count(),
+            2
+        )
+        self.assertEqual(
+            registry.Product.Family.ShoeFamilyTest.query().count(),
+            1
+        )
+        self.assertEqual(
+            registry.Product.Family.ShoeFamilyTest.query().first().code,
+            "SHOES"
+        )
+
     def test_shoe_family_create_fail_schema_validation_base(self):
         registry = self.init_registry(None)
         registry.upgrade(install=('test_family_blok',))
