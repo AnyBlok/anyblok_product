@@ -2,6 +2,7 @@ sqlalchemy
 psycopg2-binary
 -e .
 flake8
+nose
 coverage
 WebTest
 sphinx
