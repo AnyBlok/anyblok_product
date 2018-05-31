@@ -1,8 +1,8 @@
 sqlalchemy
 psycopg2-binary
--e git+https://github.com/AnyBlok/AnyBlok_Marshmallow.git#egg=anyblok_marshmallow
 -e .
 flake8
+nose
 coverage
 WebTest
 sphinx
