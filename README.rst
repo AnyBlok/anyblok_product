@@ -19,6 +19,11 @@
    :target: https://pypi.python.org/pypi/anyblok_product/
    :alt: Version status
 
+.. image:: https://readthedocs.org/projects/anyblok_product/badge/?version=latest
+    :alt: Documentation Status
+    :scale: 100%
+    :target: https://anyblok-product.readthedocs.io/en/latest/?badge=latest
+
 
 ===============
 Anyblok Product
