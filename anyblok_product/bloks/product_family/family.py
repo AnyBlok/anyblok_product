@@ -36,7 +36,7 @@ class Family:
     edit_date = DateTime(default=datetime.now, nullable=False,
                          auto_update=True)
     code = String(label="Family code", unique=True, nullable=False)
-    name = String(label="Family name")
+    name = String(label="Family name", max_length=256)
     description = Text(label="Family description")
     properties = Jsonb(label="Family properties")
 

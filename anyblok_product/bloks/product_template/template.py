@@ -30,7 +30,7 @@ class Template:
     edit_date = DateTime(default=datetime.now, nullable=False,
                          auto_update=True)
     code = String(label="Template code", unique=True, nullable=False)
-    name = String(label="Template name")
+    name = String(label="Template name", max_length=256)
     description = Text(label="Template description")
     properties = Jsonb(label="Template properties")
 
