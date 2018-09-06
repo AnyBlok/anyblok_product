@@ -32,7 +32,7 @@ class Item:
     edit_date = DateTime(default=datetime.now, nullable=False,
                          auto_update=True)
     code = String(label="Item code", unique=True, nullable=False)
-    name = String(label="Item name", max_length=256)
+    name = String(label="Item name", size=256)
     description = Text(label="Item description")
     properties = Jsonb(label="Item properties")
 
