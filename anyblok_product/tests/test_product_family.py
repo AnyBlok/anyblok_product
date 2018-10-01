@@ -377,7 +377,9 @@ class TestItemBlok(DBTestCase):
 
         self.assertTrue('properties' in ctx.exception.messages.keys())
         self.assertDictEqual(
-                dict(properties=dict(size=['Not a valid choice.'])),
+                dict(properties=dict(
+                    size=['Not a valid choice.'],
+                    unexisting_key=['Unknown field.'])),
                 ctx.exception.messages)
 
     def test_shoe_item_create_collection(self):
