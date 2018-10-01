@@ -2,7 +2,7 @@ from marshmallow import Schema, fields, validates_schema, ValidationError
 
 from anyblok import Declarations
 
-from anyblok_marshmallow import ModelSchema
+from anyblok_marshmallow import SchemaWrapper
 from anyblok_marshmallow.fields import Nested, JsonCollection
 
 
@@ -25,12 +25,11 @@ class ShoeFamilySchemaProperties(Schema):
             raise ValidationError('Unknown field', unknown)
 
 
-class ShoeFamilySchema(ModelSchema):
+class ShoeFamilySchema(SchemaWrapper):
+    model = "Model.Product.Family"
 
-    class Meta:
-        model = "Model.Product.Family"
-
-    properties = Nested(ShoeFamilySchemaProperties(partial=True))
+    class Schema:
+        properties = Nested(ShoeFamilySchemaProperties(partial=True))
 
 
 class ShoeTemplateSchemaProperties(Schema):
@@ -54,12 +53,11 @@ class ShoeTemplateSchemaProperties(Schema):
             raise ValidationError('Unknown field', unknown)
 
 
-class ShoeTemplateSchema(ModelSchema):
+class ShoeTemplateSchema(SchemaWrapper):
+    model = "Model.Product.Template"
 
-    class Meta:
-        model = "Model.Product.Template"
-
-    properties = Nested(ShoeTemplateSchemaProperties(partial=True))
+    class Schema:
+        properties = Nested(ShoeTemplateSchemaProperties(partial=True))
 
 
 class ShoeItemSchemaProperties(Schema):
@@ -79,12 +77,11 @@ class ShoeItemSchemaProperties(Schema):
             raise ValidationError('Unknown field', unknown)
 
 
-class ShoeItemSchema(ModelSchema):
+class ShoeItemSchema(SchemaWrapper):
+    model = "Model.Product.Item"
 
-    class Meta:
-        model = "Model.Product.Item"
-
-    properties = Nested(ShoeItemSchemaProperties(partial=True))
+    class Schema:
+        properties = Nested(ShoeItemSchemaProperties(partial=True))
 
 
 @register(Model.Product.Family, tablename=Model.Product.Family)
