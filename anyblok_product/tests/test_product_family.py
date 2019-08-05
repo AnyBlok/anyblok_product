@@ -376,19 +376,19 @@ class TestItemBlok:
         assert len(shoe_family.items) == 900
 
         assert Template.query().filter(
-                Template.properties['brand'].has_key("Adibash")
+                Template.properties['brand'].has_key("Adibash") # noqa
             ).count() == 12
 
         assert Template.query().filter(
-                Template.properties['brand'].has_key('Adibash')).filter(
-                    Template.properties['genre'].has_key('Unisex')
+                Template.properties['brand'].has_key('Adibash')).filter( # noqa
+                    Template.properties['genre'].has_key('Unisex') # noqa
             ).count() == 3
 
         assert Item.query().filter(
-                Item.properties['color'].has_key('blue')
+                Item.properties['color'].has_key('blue') # noqa
             ).count() == 180
 
         assert Item.query().filter(
-                Item.properties['color'].has_key('blue')).filter(
-                    Item.properties['size'].has_key('40')
+                Item.properties['color'].has_key('blue')).filter( # noqa
+                    Item.properties['size'].has_key('40') # noqa
             ).count() == 36
