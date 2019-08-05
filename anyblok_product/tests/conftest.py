@@ -12,7 +12,7 @@ _GENRES = ["Men", "Women", "Kids", "Unisex"]
 
 @pytest.fixture(scope="class")
 def registry_family_blok(testbloks_loaded):
-    #flake8 was being capricious here about import, so I added a noqa
+    # flake8 was being capricious here about import, so I added a noqa
     registry = init_registry_with_bloks(['test_family_blok'], None) # noqa
     return registry
 
