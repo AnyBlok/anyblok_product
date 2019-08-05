@@ -1,5 +1,6 @@
 language: python
-sudo: true
+dist: xenial
+sudo: false
 addons:
     postgresql: "9.6"
 
