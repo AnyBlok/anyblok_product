@@ -242,7 +242,8 @@ class TestTemplateBlok(DBTestCase):
 
         self.assertTrue('properties' in ctx.exception.messages.keys())
         self.assertDictEqual(
-                dict(properties=dict(genre=['Not a valid choice.'])),
+                dict(properties=dict(genre=[
+                    'Must be one of: Men, Women, Kids, Unisex.'])),
                 ctx.exception.messages)
 
 
@@ -378,7 +379,7 @@ class TestItemBlok(DBTestCase):
         self.assertTrue('properties' in ctx.exception.messages.keys())
         self.assertDictEqual(
                 dict(properties=dict(
-                    size=['Not a valid choice.'],
+                    size=['Must be one of: 39, 40, 41, 42, 43.'],
                     unexisting_key=['Unknown field.'])),
                 ctx.exception.messages)
 
