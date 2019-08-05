@@ -28,6 +28,8 @@ install:
   - pip install wheel
   - pip install coveralls
   - pip install -r requirements.test.txt
+  - pip install python-coveralls
+  - pip install -U pytest pytest-cov
 
 env:
   global:
@@ -38,7 +40,7 @@ env:
 script:
   - flake8 anyblok_product
   - psql -c 'create database travis_ci_test;' -U postgres
-  - nosetests anyblok_product/tests -v -s --with-coverage --cover-package=anyblok_product
+  - py.test anyblok_product/tests
   - psql -c 'drop database travis_ci_test;' -U postgres
   - anyblok_createdb -c tests.cfg --test-blok-at-install
   - psql -c 'drop database anyblok_product_test;' -U postgres
