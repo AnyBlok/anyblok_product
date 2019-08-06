@@ -299,8 +299,8 @@ class TestTemplateBlok:
         shoe_template.update(properties={'brand': 'Nike', 'style': 'Sandal'})
         assert shoe_template.properties['brand'] == 'Nike'
         assert shoe_template.properties['style'] == 'Sandal'
-        assert len(shoe_template.properties) == len("{'brand': 'Nike',"
-                                                 " 'style': 'Sandal'}")
+        assert len(str(shoe_template.properties)) == len("{'brand': 'Nike',"
+                                                         " 'style': 'Sandal'}")
 
 
 class TestItemBlok:
