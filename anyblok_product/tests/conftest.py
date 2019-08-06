@@ -57,3 +57,17 @@ def shoe_template(registry_family_blok, shoe_family):
                 style="Sneakers",
                 genre="Unisex")
             )
+
+
+@pytest.fixture
+def shoe_item(registry_family_blok, shoe_family):
+    registry = registry_family_blok
+    return registry.Product.Item.create(
+            shoe_template,
+            code="GAZGAZ-BLUE-40",
+            name="Gaz Gaz blue 40",
+            description="Gaz Gaz blue 40 item description",
+            properties=dict(
+                color="blue",
+                size="40")
+            )
