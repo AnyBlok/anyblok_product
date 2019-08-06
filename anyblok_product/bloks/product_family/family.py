@@ -61,6 +61,19 @@ class Family:
             data = sch.load(kwargs)
         return cls.insert(**data)
 
+    def amend(self, **kwargs):
+        data = kwargs.copy()
+        properties = data.pop('properties', dict())
+        if properties:
+            for k, v in properties.items():
+                self.properties[k] = v
+        if self.family_schema:
+            sch = self.family_schema(registry=self.registry)
+            data.update(dict(properties=self.properties))
+            data = sch.load(data)
+        self.update(**data)
+        return self
+
     @classmethod
     def query(cls, *args, **kwargs):
         query = super(Family, cls).query(*args, **kwargs)

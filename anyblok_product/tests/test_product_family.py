@@ -66,11 +66,9 @@ class TestFamilyBlok:
             registry.Product.Family.ShoeFamilyTest.create(
                 name="Shoes", description="Shoes description")
 
-            assert 'code' in ctx.exception.messages.keys()
-            assert 'unexistingkey' in ctx.exception.messages.keys()
-            assert dict(
-                    code=['Missing data for required field.']
-                    ) == ctx.exception.messages
+        assert 'code' in ctx.value.messages.keys()
+        assert dict(code=['Missing data for required field.']
+                    ) == ctx.value.messages
 
     def test_shoe_fam_create_fail_schema_valid_bad_field(self,
                                                          registry_family_blok
@@ -84,7 +82,7 @@ class TestFamilyBlok:
                     description="Shoes description",
                     unexisting_field="plop"
                     )
-            assert 'unexisting_field' in ctx.exception.messages.keys()
+        assert 'unexisting_field' in ctx.value.messages.keys()
 
     def test_shoe_fam_create_fail_schema_validation_props(self,
                                                           registry_family_blok
@@ -99,10 +97,84 @@ class TestFamilyBlok:
                     properties=dict(unexisting_schema_key=[])
                     )
 
-            assert 'properties' in ctx.exception.messages.keys()
+        assert 'properties' in ctx.value.messages.keys()
+        assert dict(properties=dict(
+                    unexisting_schema_key=['Unknown field.'])
+                    ) == ctx.value.messages
+
+    def test_shoe_family_update(self,
+                                shoe_family,
+                                ):
+
+        shoe_family.update(properties={'brands': 'Crocs'})
+        assert shoe_family.properties['brands'] == 'Crocs'
+        assert str(shoe_family.properties) == "{'brands': 'Crocs'}"
+
+    def test_shoe_family_amend_existing_keys(self,
+                                             shoe_family,
+                                             ):
+
+        original_keys = shoe_family.properties.copy().keys()
+        shoe_family.amend(code="BOOTS", name="Boots")
+        assert set(shoe_family.properties.keys()) == set(original_keys)
+        assert shoe_family.name == "Boots"
+        assert shoe_family.code == "BOOTS"
+
+    def test_shoe_family_amend_unexisting_keys(self,
+                                               shoe_family,
+                                               ):
+        with pytest.raises(ValidationError) as ctx:
+            shoe_family.amend(unexisting_key="unexist")
+
+        assert 'code' in ctx.value.messages.keys()
+        assert 'unexisting_key' in ctx.value.messages.keys()
+
+    def test_shoe_family_amend_bad_value(self,
+                                         shoe_family,
+                                         ):
+        with pytest.raises(ValidationError) as ctx:
+            shoe_family.amend(code=123)
+
+        assert 'code' in ctx.value.messages.keys()
+        assert dict(code=['Not a valid string.']
+                    ) == ctx.value.messages
+
+    def test_shoe_family_amend_properties_existing_keys(self,
+                                                        shoe_family,
+                                                        ):
+        original_keys = shoe_family.properties.copy().keys()
+        shoe_family_keys = shoe_family.properties.keys()
+        shoe_family.amend(code="BOOTS", name="Boots",
+                          properties={'brands': ['Crocs', 'Nike'],
+                                      'sizes': ['37', '38']})
+        assert set(shoe_family_keys) == set(original_keys)
+
+    def test_shoe_family_amend_properties_unexisting_keys(self,
+                                                          shoe_family,
+                                                          ):
+        with pytest.raises(ValidationError) as ctx:
+            shoe_family.amend(code="BOOTS", name="Boots",
+                              properties={'brands': ['Crocs', 'Nike'],
+                                          'sizes': ['37', '38'],
+                                          'unexisting_schema_key': []})
+
+        assert 'properties' in ctx.value.messages.keys()
+        assert dict(properties=dict(unexisting_schema_key=['Unknown field.'])
+                    ) == ctx.value.messages
+
+    def test_shoe_family_amend_properties_bad_value(self,
+                                                    shoe_family,
+                                                    ):
+        with pytest.raises(ValidationError) as ctx:
+            shoe_family.amend(code="BOOTS", name="Boots",
+                              properties={'brands': [23],
+                                          'sizes': ['37', '38'],
+                                          })
+
+            assert 'properties' in ctx.value.messages.keys()
             assert dict(properties=dict(
-                        unexisting_schema_key=['Unknown field'])
-                        ) == ctx.exception.messages
+                        brands=['Not a valid string.'])
+                        ) == ctx.value.messages
 
 
 class TestTemplateBlok:
@@ -152,7 +224,7 @@ class TestTemplateBlok:
                     style="Sneakers",
                     genre="Unisex")
                 )
-            assert 'code' in ctx.exception.messages.keys()
+            assert 'code' in ctx.value.messages.keys()
 
     def test_shoe_template_create_fail_schema_bad_field(self,
                                                         registry_family_blok,
@@ -172,7 +244,7 @@ class TestTemplateBlok:
                     style="Sneakers",
                     genre="Unisex")
                 )
-            assert 'unexisting_field' in ctx.exception.messages.keys()
+            assert 'unexisting_field' in ctx.value.messages.keys()
 
     def test_shoe_template_create_fail_sch_props_bad_key(self,
                                                          registry_family_blok,
@@ -193,9 +265,9 @@ class TestTemplateBlok:
                     genre="Unisex")
                 )
 
-            assert 'properties' in ctx.exception.messages.keys()
+            assert 'properties' in ctx.value.messages.keys()
             assert dict(properties=dict(unexisting_key=['Unknown field'])
-                        ) == ctx.exception.messages
+                        ) == ctx.value.messages
 
     def test_shoe_template_create_fail_sch_props_bad_value(self,
                                                            shoe_family,
@@ -215,9 +287,20 @@ class TestTemplateBlok:
                     genre="Bad value")
                 )
 
-            assert 'properties' in ctx.exception.messages.keys()
+            assert 'properties' in ctx.value.messages.keys()
             assert dict(properties=dict(genre=['Not a valid choice.'])
-                        ) == ctx.exception.messages
+                        ) == ctx.value.messages
+
+    def test_shoe_template_update(self,
+                                  registry_family_blok,
+                                  shoe_template,
+                                  ):
+
+        shoe_template.update(properties={'brand': 'Nike', 'style': 'Sandal'})
+        assert shoe_template.properties['brand'] == 'Nike'
+        assert shoe_template.properties['style'] == 'Sandal'
+        assert str(shoe_template.properties) == ("{'brand': 'Nike',"
+                                                 " 'style': 'Sandal'}")
 
 
 class TestItemBlok:
@@ -264,7 +347,7 @@ class TestItemBlok:
                         color="blue",
                         size="40")
                     )
-            assert 'code' in ctx.exception.messages.keys()
+            assert 'code' in ctx.value.messages.keys()
 
     def test_shoe_item_create_fail_schema_valid_bad_field(self,
                                                           shoe_template,
@@ -284,7 +367,7 @@ class TestItemBlok:
                         size="40")
                     )
 
-            assert 'unexisting_field' in ctx.exception.messages.keys()
+            assert 'unexisting_field' in ctx.value.messages.keys()
 
     def test_shoe_item_create_fail_schema_props_bad_key(self,
                                                         shoe_template,
@@ -304,9 +387,9 @@ class TestItemBlok:
                         size="40")
                     )
 
-            assert 'properties' in ctx.exception.messages.keys()
+            assert 'properties' in ctx.value.messages.keys()
             assert dict(properties=dict(unexisting_key=['Unknown field'])
-                        ) == ctx.exception.messages
+                        ) == ctx.value.messages
 
     def test_shoe_item_create_fail_schema_props_bad_value(self,
                                                           shoe_template,
@@ -326,10 +409,10 @@ class TestItemBlok:
                         size="4000")
                     )
 
-            assert 'properties' in ctx.exception.messages.keys()
+            assert 'properties' in ctx.value.messages.keys()
             assert dict(properties=dict(size=['Not a valid choice.'],
                         unexisting_key=['Unknown field.'])
-                        ) == ctx.exception.messages
+                        ) == ctx.value.messages
 
     def test_shoe_item_create_collection(self,
                                          shoe_family,
