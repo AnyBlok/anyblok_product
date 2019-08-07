@@ -301,6 +301,79 @@ class TestTemplateBlok:
         assert shoe_template.properties['style'] == 'Sandal'
         assert len(str(shoe_template.properties)) == len("{'brand': 'Nike',"
                                                          " 'style': 'Sandal'}")
+    def test_shoe_template_amend_existing_keys(self,
+                                             shoe_family,
+                                             shoe_template,
+                                             ):
+
+        original_keys = shoe_template.properties.copy().keys()
+        shoe_template.amend(shoe_family, code="BOOTS", name="Boots")
+        assert set(shoe_template.properties.keys()) == set(original_keys)
+        assert shoe_template.name == "Boots"
+        assert shoe_template.code == "BOOTS"
+
+    def test_shoe_template_amend_unexisting_keys(self,
+                                                 shoe_family,
+                                               shoe_template,
+                                               ):
+        with pytest.raises(ValidationError) as ctx:
+            shoe_template.amend(shoe_family, unexisting_key="unexist")
+
+        assert 'code' in ctx.value.messages.keys()
+        assert 'unexisting_key' in ctx.value.messages.keys()
+
+    def test_shoe_template_amend_bad_value(self,
+                                           shoe_family,
+                                           shoe_template,
+                                           ):
+        with pytest.raises(ValidationError) as ctx:
+            shoe_template.amend(shoe_family, code=123)
+
+        assert 'code' in ctx.value.messages.keys()
+        assert dict(code=['Not a valid string.']
+                    ) == ctx.value.messages
+
+    def test_shoe_template_amend_properties_existing_keys(self,
+                                                          shoe_family,
+                                                          shoe_template,
+                                                          ):
+        original_keys = shoe_template.properties.copy().keys()
+        shoe_template_keys = shoe_template.properties.keys()
+        shoe_template.amend(shoe_family, code="BOOTS", name="Boots",
+                          properties={'brand': 'Nixe',
+                                      'genre': 'Men',
+                                      'style': 'Sandals'})
+        assert set(shoe_template_keys) == set(original_keys)
+
+    def test_shoe_template_amend_properties_unexisting_keys(self,
+                                                            shoe_family,
+                                                            shoe_template,
+                                                            ):
+        with pytest.raises(ValidationError) as ctx:
+            shoe_template.amend(shoe_family, code="BOOTS", name="Boots",
+                              properties={'brand': 'Nixe',
+                                          'genre': 'Men',
+                                          'unexisting_schema_key': ''})
+
+        assert 'properties' in ctx.value.messages.keys()
+        assert dict(properties=dict(unexisting_schema_key=['Unknown field.'])
+                    ) == ctx.value.messages
+
+    def test_shoe_template_amend_properties_bad_value(self,
+                                                      shoe_family,
+                                                      shoe_template,
+                                                      ):
+        with pytest.raises(ValidationError) as ctx:
+            shoe_template.amend(shoe_family, code="BOOTS", name="Boots",
+                              properties={'brand': 23,
+                                          'genre': 'Men',
+                                          'style': 'Sandals'
+                                          })
+
+            assert 'properties' in ctx.value.messages.keys()
+            assert dict(properties=dict(
+                        brands=['Not a valid string.'])
+                        ) == ctx.value.messages
 
 
 class TestItemBlok:

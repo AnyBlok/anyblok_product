@@ -115,3 +115,16 @@ class Template:
             sch = family.template_schema(registry=cls.registry)
             data = sch.load(kwargs, instances=dict(default=family))
         return cls.insert(family=family, **data)
+
+    def amend(self, family, **kwargs):
+        data = kwargs.copy()
+        properties = data.pop('properties', dict())
+        if properties:
+            for k, v in properties.items():
+                self.properties[k] = v
+        if family.template_schema:
+            sch = family.template_schema(registry=self.registry)
+            data.update(dict(properties=self.properties))
+            data=sch.load(data, instances=dict(default=family))
+        self.update(family=family, **data)
+        return self
