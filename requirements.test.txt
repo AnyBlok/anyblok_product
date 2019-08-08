@@ -6,4 +6,3 @@ coverage
 WebTest
 sphinx
 sphinxcontrib-httpdomain
-pytest

@@ -45,7 +45,7 @@ lint: ## check style with flake8
 	flake8 anyblok_product/
 
 test: ## run anyblok pytest tests
-	ANYBLOK_CONFIG_FILE=tests.cfg py.test -ra -vv -s -W ignore::DeprecationWarning anyblok_product/tests/
+	ANYBLOK_CONFIG_FILE=tests.cfg py.test -ra -vv -s anyblok_product/tests/
 
 documentation: ## generate documentation
 	anyblok_doc -c tests.cfg --doc-format RST --doc-output doc/source/apidoc.rst
