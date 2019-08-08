@@ -297,10 +297,11 @@ class TestTemplateBlok:
         assert shoe_template.properties['style'] == 'Sandal'
         assert len(str(shoe_template.properties)) == len("{'brand': 'Noke',"
                                                          " 'style': 'Sandal'}")
+
     def test_shoe_template_amend_existing_keys(self,
-                                             shoe_family,
-                                             shoe_template,
-                                             ):
+                                               shoe_family,
+                                               shoe_template,
+                                               ):
 
         original_keys = shoe_template.properties.copy().keys()
         shoe_template.amend(shoe_family, code="BOOTS", name="Boots")
@@ -310,18 +311,19 @@ class TestTemplateBlok:
 
     def test_shoe_template_amend_unexisting_keys(self,
                                                  shoe_family,
-                                               shoe_template,
-                                               ):
+                                                 shoe_template,
+                                                 ):
+
         with pytest.raises(ValidationError) as ctx:
             shoe_template.amend(shoe_family, unexisting_key="unexist")
 
-        assert 'code' in ctx.value.messages.keys()
         assert 'unexisting_key' in ctx.value.messages.keys()
 
     def test_shoe_template_amend_bad_value(self,
                                            shoe_family,
                                            shoe_template,
                                            ):
+
         with pytest.raises(ValidationError) as ctx:
             shoe_template.amend(shoe_family, code=123)
 
@@ -335,10 +337,12 @@ class TestTemplateBlok:
                                                           ):
         original_keys = shoe_template.properties.copy().keys()
         shoe_template_keys = shoe_template.properties.keys()
-        shoe_template.amend(shoe_family, code="BOOTS", name="Boots",
-                          properties={'brand': 'Nixe',
-                                      'genre': 'Men',
-                                      'style': 'Sandals'})
+        shoe_template.amend(shoe_family,
+                            properties={'brand': 'Nixe',
+                                        'genre': 'Men',
+                                        'style': 'Sandals'
+                                        })
+
         assert set(shoe_template_keys) == set(original_keys)
 
     def test_shoe_template_amend_properties_unexisting_keys(self,
@@ -346,10 +350,11 @@ class TestTemplateBlok:
                                                             shoe_template,
                                                             ):
         with pytest.raises(ValidationError) as ctx:
-            shoe_template.amend(shoe_family, code="BOOTS", name="Boots",
-                              properties={'brand': 'Nixe',
-                                          'genre': 'Men',
-                                          'unexisting_schema_key': ''})
+            shoe_template.amend(shoe_family,
+                                properties={'brand': 'Nixe',
+                                            'genre': 'Men',
+                                            'unexisting_schema_key': ''
+                                            })
 
         assert 'properties' in ctx.value.messages.keys()
         assert dict(properties=dict(unexisting_schema_key=['Unknown field.'])
@@ -360,11 +365,11 @@ class TestTemplateBlok:
                                                       shoe_template,
                                                       ):
         with pytest.raises(ValidationError) as ctx:
-            shoe_template.amend(shoe_family, code="BOOTS", name="Boots",
-                              properties={'brand': 23,
-                                          'genre': 'Men',
-                                          'style': 'Sandals'
-                                          })
+            shoe_template.amend(shoe_family,
+                                properties={'brand': 23,
+                                            'genre': 'Men',
+                                            'style': 'Sandals'
+                                            })
 
             assert 'properties' in ctx.value.messages.keys()
             assert dict(properties=dict(

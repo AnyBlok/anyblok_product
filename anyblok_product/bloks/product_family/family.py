@@ -123,8 +123,8 @@ class Template:
             for k, v in properties.items():
                 self.properties[k] = v
         if family.template_schema:
-            sch = family.template_schema(registry=self.registry)
+            sch = family.template_schema(registry=self.registry, partial=True)
             data.update(dict(properties=self.properties))
-            data=sch.load(data, instances=dict(default=family))
+            data = sch.load(data, instances=dict(default=family))
         self.update(family=family, **data)
         return self
