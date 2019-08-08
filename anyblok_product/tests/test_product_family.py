@@ -106,9 +106,9 @@ class TestFamilyBlok:
                                 shoe_family,
                                 ):
 
-        shoe_family.update(properties={'brands': 'Crocs'})
-        assert shoe_family.properties['brands'] == 'Crocs'
-        assert str(shoe_family.properties) == "{'brands': 'Crocs'}"
+        shoe_family.update(properties={'brands': 'Crucs'})
+        assert shoe_family.properties['brands'] == 'Crucs'
+        assert str(shoe_family.properties) == "{'brands': 'Crucs'}"
 
     def test_shoe_family_amend_existing_keys(self,
                                              shoe_family,
@@ -126,7 +126,6 @@ class TestFamilyBlok:
         with pytest.raises(ValidationError) as ctx:
             shoe_family.amend(unexisting_key="unexist")
 
-        assert 'code' in ctx.value.messages.keys()
         assert 'unexisting_key' in ctx.value.messages.keys()
 
     def test_shoe_family_amend_bad_value(self,
@@ -144,8 +143,7 @@ class TestFamilyBlok:
                                                         ):
         original_keys = shoe_family.properties.copy().keys()
         shoe_family_keys = shoe_family.properties.keys()
-        shoe_family.amend(code="BOOTS", name="Boots",
-                          properties={'brands': ['Crocs', 'Nike'],
+        shoe_family.amend(properties={'brands': ['Crucs', 'Noke'],
                                       'sizes': ['37', '38']})
         assert set(shoe_family_keys) == set(original_keys)
 
@@ -153,8 +151,7 @@ class TestFamilyBlok:
                                                           shoe_family,
                                                           ):
         with pytest.raises(ValidationError) as ctx:
-            shoe_family.amend(code="BOOTS", name="Boots",
-                              properties={'brands': ['Crocs', 'Nike'],
+            shoe_family.amend(properties={'brands': ['Crucs', 'Noke'],
                                           'sizes': ['37', '38'],
                                           'unexisting_schema_key': []})
 
@@ -166,8 +163,7 @@ class TestFamilyBlok:
                                                     shoe_family,
                                                     ):
         with pytest.raises(ValidationError) as ctx:
-            shoe_family.amend(code="BOOTS", name="Boots",
-                              properties={'brands': [23],
+            shoe_family.amend(properties={'brands': [23],
                                           'sizes': ['37', '38'],
                                           })
 
@@ -296,10 +292,10 @@ class TestTemplateBlok:
                                   shoe_template,
                                   ):
 
-        shoe_template.update(properties={'brand': 'Nike', 'style': 'Sandal'})
-        assert shoe_template.properties['brand'] == 'Nike'
+        shoe_template.update(properties={'brand': 'Noke', 'style': 'Sandal'})
+        assert shoe_template.properties['brand'] == 'Noke'
         assert shoe_template.properties['style'] == 'Sandal'
-        assert len(str(shoe_template.properties)) == len("{'brand': 'Nike',"
+        assert len(str(shoe_template.properties)) == len("{'brand': 'Noke',"
                                                          " 'style': 'Sandal'}")
     def test_shoe_template_amend_existing_keys(self,
                                              shoe_family,

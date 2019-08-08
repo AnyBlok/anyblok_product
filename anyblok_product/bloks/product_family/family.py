@@ -68,7 +68,7 @@ class Family:
             for k, v in properties.items():
                 self.properties[k] = v
         if self.family_schema:
-            sch = self.family_schema(registry=self.registry)
+            sch = self.family_schema(registry=self.registry, partial=True)
             data.update(dict(properties=self.properties))
             data = sch.load(data)
         self.update(**data)
